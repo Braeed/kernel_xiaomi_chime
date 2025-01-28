@@ -27,9 +27,9 @@ jobs:
         patchelf git-lfs ripgrep clang-11 &> /dev/null
 
     - name: Set Swap Space
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 10
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
           
     - name: Download Neutron Toolchain
       run: bash scripts/hani-ci.sh --tools
