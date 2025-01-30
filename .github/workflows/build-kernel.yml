@@ -31,6 +31,10 @@ jobs:
       with:
         version: 14
         platform: x64
+    
+    - name: Kernel-SU Next
+      run: | 
+        curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 
     - name: Download Neutron Toolchain
       run: bash scripts/hani-ci.sh --tools
