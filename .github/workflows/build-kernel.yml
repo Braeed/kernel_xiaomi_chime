@@ -22,9 +22,15 @@ jobs:
       run: |
         sudo apt install -y git-core gnupg build-essential zip \
         curl libarchive-tools flex \
-        unzip python2 python3 python3-pip python3-dev \
-        python-is-python3 ccache libncurses5 lzop \
-        patchelf git-lfs ripgrep clang-11 &> /dev/null
+        unzip python3 python3-pip python3-dev \
+        python-is-python3 ccache libncurses5-dev lzop \
+        patchelf git-lfs ripgrep &> /dev/null
+    
+    - name: Set up Clang
+      uses: egor-tensin/setup-clang@v1
+      with:
+        version: 14
+        platform: x64
 
     - name: Download Neutron Toolchain
       run: bash scripts/hani-ci.sh --tools
