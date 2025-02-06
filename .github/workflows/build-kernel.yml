@@ -42,8 +42,22 @@ jobs:
     - name: Build hanikrnl.
       run: bash scripts/hani-ci.sh --build
 
+    - name: Prepare Flashable ZIP
+      run: |
+        lastcommit=$(git log -n 1 --pretty=format:'%h' | cut -c 1-7)
+        ZIPNAME="4.19-hanikrnl.KSU-NEXT."$lastcommit"-chime-$(date '+%d.%m.%y-%H%M').zip" && echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
+        git clone https://github.com/Dominium-Apum/AnyKernel3.git
+        mkdir -p AnyKernel3
+        cp out/arch/arm64/boot/Image AnyKernel3/
+        cp out/arch/arm64/boot/dtbo.img AnyKernel3/
+        cp out/arch/arm64/boot/dtb.img AnyKernel3/
+        rm -f AnyKernel3/README.md 
+        rm -rf AnyKernel3/.git
+        find AnyKernel3/ -name "*placeholder*" -exec rm -rf {} +
+
     - name: Upload kernel
       uses: actions/upload-artifact@v4
       with:
-        name: hanikrnl
-        path: 4.19-hanikrnl.*-chime*.zip
+        name: ${{ env.ZIPNAME }}
+        path: ./AnyKernel3/*
+        compression-level: 9
