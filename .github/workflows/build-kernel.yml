@@ -30,7 +30,11 @@ jobs:
       uses: egor-tensin/setup-clang@v1
       with:
         version: 14
-        platform: x64
+        platform: 
+    
+    - name: Kernel-SU Next
+      run: | 
+        curl -LSs "https://raw.githubusercontent.com/backslashxx/KernelSU/refs/heads/magic/kernel/setup.sh" | bash -s 12103+155
 
     - name: Download Neutron Toolchain
       run: bash scripts/hani-ci.sh --tools
