@@ -67,16 +67,18 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 
     echo -e "\n📂 Setting up defconfig..."
     make O=out ARCH=arm64 \
-        CROSS_COMPILE=aarch64-linux-android- \
+        CROSS_COMPILE=aarch64-linux-gnu- \
         LLVM=1 \
         LLVM_IAS=1 \
+        STRIP=llvm-strip \
         $DEFCONFIG
 
     echo -e "\n🚀 Starting kernel build..."
-    make -j$(nproc) O=out ARCH=arm64 \
-        CROSS_COMPILE=aarch64-linux-android- \
+    make -j$(nproc --all) O=out ARCH=arm64 \
+        CROSS_COMPILE=aarch64-linux-gnu- \
         LLVM=1 \
-        LLVM_IAS=1 \ || exit 1
+        LLVM_IAS=1 \
+        STRIP=llvm-strip || exit 1
 
     echo -e "\n✅ Build completed in $SECONDS seconds."
     exit 0
