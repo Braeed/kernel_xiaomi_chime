@@ -12,9 +12,6 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Making the Environment leaner
-      run: sudo snap list && sudo snap remove firefox && sudo apt remove -y snapd
-
     - name: Update Environment
       run: sudo apt update -y
 
@@ -28,31 +25,31 @@ jobs:
     
     - name: KernelSU 
       run: | 
-        curl -LSs "https://raw.githubusercontent.com/backslashxx/KernelSU/refs/heads/magic/kernel/setup.sh" | bash -s 12103+155
+        curl -LSs "https://raw.githubusercontent.com/backslashxx/KernelSU/refs/heads/magic/kernel/setup.sh" | bash -s 12103+155-testing
 
-    - name: Download Neutron Toolchain
+    - name: Download Toolchain
       run: bash scripts/hani-ci.sh --tools
 
-    - name: Build hanikrnl.
-      run: bash scripts/hani-ci.sh --build
+    # - name: Build hanikrnl.
+    #   run: bash scripts/hani-ci.sh --build
 
-    - name: Prepare Flashable ZIP
-      run: |
-        lastcommit=$(git log -n 1 --pretty=format:'%h' | cut -c 1-7)
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        ZIPNAME="4.19-hanikrnl."$branch-$lastcommit"-$(date '+%d.%m.%y-%H%M').zip" && echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
-        git clone https://github.com/Dominium-Apum/AnyKernel3.git
-        mkdir -p AnyKernel3
-        cp out/arch/arm64/boot/Image AnyKernel3/
-        cp out/arch/arm64/boot/dtbo.img AnyKernel3/
-        cp out/arch/arm64/boot/dtb.img AnyKernel3/
-        rm -f AnyKernel3/README.md 
-        rm -rf AnyKernel3/.git
-        find AnyKernel3/ -name "*placeholder*" -exec rm -rf {} +
+    # - name: Prepare Flashable ZIP
+    #   run: |
+    #     lastcommit=$(git log -n 1 --pretty=format:'%h' | cut -c 1-7)
+    #     branch=$(git rev-parse --abbrev-ref HEAD)
+    #     ZIPNAME="4.19-hanikrnl."$branch-$lastcommit"-$(date '+%d.%m.%y-%H%M').zip" && echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
+    #     git clone https://github.com/Dominium-Apum/AnyKernel3.git
+    #     mkdir -p AnyKernel3
+    #     cp out/arch/arm64/boot/Image AnyKernel3/
+    #     cp out/arch/arm64/boot/dtbo.img AnyKernel3/
+    #     cp out/arch/arm64/boot/dtb.img AnyKernel3/
+    #     rm -f AnyKernel3/README.md 
+    #     rm -rf AnyKernel3/.git
+    #     find AnyKernel3/ -name "*placeholder*" -exec rm -rf {} +
 
-    - name: Upload kernel
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.ZIPNAME }}
-        path: ./AnyKernel3/*
-        compression-level: 9
+    # - name: Upload kernel
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: ${{ env.ZIPNAME }}
+    #     path: ./AnyKernel3/*
+    #     compression-level: 9

@@ -11,13 +11,13 @@ DEFCONFIG="vendor/chime_defconfig"
 # Toolchain paths (update after downloading)
 CLANG_PATH="$PWD/toolchain/clang"
 GCC64_PATH="$PWD/toolchain/GCC-64"
-# GCC32_PATH="$PWD/toolchain/arm-linux-androideabi-4.9"
+GCC32_PATH="$PWD/toolchain/GCC-32"
 
 # Export build info
 export KBUILD_BUILD_VERSION=69
 export KBUILD_BUILD_USER=hani
 export KBUILD_BUILD_HOST=dungeon
-export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$PATH"
+export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$GCC32_PATH/bin:$PATH"
 
 # ========== TOOLCHAIN DOWNLOADER ==========
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
@@ -39,13 +39,18 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     rm gcc64.tar.gz
     echo "✅ GCC 64-bit extracted."
 
-    # # -------- GCC 32-bit --------
-    # echo "📦 Downloading AOSP GCC 32-bit..."
-    # aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
-    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/heads/master.tar.gz" || exit 1
-    # mkdir -p arm-linux-androideabi-4.9 && tar -xzf gcc32.tar.gz -C arm-linux-androideabi-4.9
-    # rm gcc32.tar.gz
-    # echo "✅ GCC 32-bit extracted."
+    # -------- GCC 32-bit --------
+    echo "📦 Downloading AOSP GCC 32-bit..."
+    aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
+      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
+    rm gcc32.tar.gz
+    echo "✅ GCC 32-bit extracted."
+    echo "--- Contents within clang toolchain ---"
+    ls "$(pwd)/toolchain/clang"/* echo "" # Add a blank line for better readability
+
+    echo "--- Contents within GCC-64 toolchain ---"
+    ls "$(pwd)/toolchain/GCC-64"/* echo "" # Add a blank line for better readability
 
     echo -e "\n🎉 All toolchains downloaded successfully"
     exit 0
@@ -62,7 +67,7 @@ fi
 
 # ========== KERNEL BUILD ==========
 if [[ $1 = "-b" || $1 = "--build" ]]; then
-	PATH=$PWD/toolchain/clang/bin:$PWD/toolchain/GCC-64/bin:$PATH
+	PATH=$PWD/toolchain/clang/bin:$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:$PATH
     mkdir -p out
 
     echo -e "\n📂 Setting up defconfig..."
