@@ -9,12 +9,12 @@ jobs:
     steps:
     - name: Testing
       run: |
-        find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
+        bash find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
 
     - name: Checkout source
       uses: actions/checkout@v4
       with:
-        submodules: recursive
+        fetch-depth: 1
 
     # - name: Making the Environment leaner
     #   run: sudo snap list && sudo snap remove firefox && sudo apt remove -y snapd
