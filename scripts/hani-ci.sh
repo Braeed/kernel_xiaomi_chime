@@ -6,7 +6,7 @@
 SECONDS=0
 KERNEL_PATH=$PWD
 AK3_DIR="$HOME/tc/AnyKernel3"
-DEFCONFIG="vendor/chime_defconfig"
+DEFCONFIG=$(find ./arch/arm64/configs -name "chime_defconfig")
 
 # Toolchain paths (update after downloading)
 CLANG_PATH="$PWD/toolchain/clang"
@@ -75,9 +75,10 @@ fi
 if [[ $1 = "-b" || $1 = "--build" ]]; then
 	PATH=$PWD/toolchain/clang/bin:$PATH
     #$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:
+    pwd
     mkdir -p out
     # echo $PATH
-    echo -e "\n📂 $DEFCONFIG"
+    echo $DEFCONFIG
     echo -e "\n📂 Setting up defconfig..."
     make O=out ARCH=arm64 $DEFCONFIG
 
