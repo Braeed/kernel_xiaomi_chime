@@ -84,17 +84,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 
     echo -e "\n🚀 Starting kernel build..."
 
-    make -j$(nproc) O=out ARCH=arm64 \
-        CC=clang \
-        CROSS_COMPILE=aarch64-linux-gnu- \
-        LD=ld.lld \
-        AR=llvm-ar \
-        NM=llvm-nm \
-        OBJCOPY=llvm-objcopy \
-        OBJDUMP=llvm-objdump \
-        STRIP=llvm-strip \
-        LLVM=1 \
-        LLVM_IAS=1 \ || exit 1
+    make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 -j$(nproc) || exit 1
 
     echo -e "\n✅ Build completed in $SECONDS seconds."
     exit 0
