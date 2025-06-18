@@ -77,7 +77,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
     #$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:
     mkdir -p out
     # echo $PATH
-    echo -e "\n📂 $(DEFCONFIG)"
+    echo -e "\n📂 $DEFCONFIG"
     echo -e "\n📂 Setting up defconfig..."
     make O=out ARCH=arm64 $DEFCONFIG
 
