@@ -94,8 +94,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
         OBJDUMP=llvm-objdump \
         STRIP=llvm-strip \
         LLVM=1 \
-        LLVM_IAS=1 \
-        olddefconfig || exit 1
+        LLVM_IAS=1 || exit 1
 
     echo -e "\n✅ Build completed in $SECONDS seconds."
     exit 0
