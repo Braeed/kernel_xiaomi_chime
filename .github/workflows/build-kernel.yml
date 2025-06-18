@@ -7,6 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Testing
+      run: |
+        find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
+
     - name: Checkout source
       uses: actions/checkout@v4
       with:
