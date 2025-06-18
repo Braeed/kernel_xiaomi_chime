@@ -35,29 +35,27 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     -------- CLANG --------
     echo "📦 Downloading AOSP Clang (r547379)..."
     aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://github.com/liliumproject/clang/releases/download/20250609/lilium_clang-20250609.tar.gz"
+      "https://github.com/topnotchfreaks/clang/releases/download/tnfclang-2025.05.30-13.38.52/topnotchfreaks-android-clang.tar.gz"
     mkdir -p clang && tar -xf clang.tar.gz -C clang
     rm clang.tar.gz
     echo "✅ Clang extracted to: $(pwd)/clang"
     
-    # # -------- GCC 64-bit --------
-    # echo "📦 Downloading AOSP GCC 64-bit..."
-    # aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
-    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    # mkdir -p GCC-64 && tar -xf gcc64.tar.gz -C GCC-64
-    # rm gcc64.tar.gz
-    # echo "✅ GCC 64-bit extracted."
+    # -------- GCC 64-bit --------
+    echo "📦 Downloading AOSP GCC 64-bit..."
+    aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
+      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    mkdir -p GCC-64 && tar -xf gcc64.tar.gz -C GCC-64
+    rm gcc64.tar.gz
+    echo "✅ GCC 64-bit extracted."
 
-    # -------- GCC 32-bit --------
-    # echo "📦 Downloading AOSP GCC 32-bit..."
-    # aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
-    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    # mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
-    # rm gcc32.tar.gz
-    # echo "✅ GCC 32-bit extracted."
+    -------- GCC 32-bit --------
+    echo "📦 Downloading AOSP GCC 32-bit..."
+    aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
+      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
+    rm gcc32.tar.gz
+    echo "✅ GCC 32-bit extracted."
     
-
-
     echo -e "\n🎉 All toolchains downloaded successfully"
     exit 0
 fi
@@ -73,9 +71,9 @@ fi
 
 # ========== KERNEL BUILD ==========
 if [[ $1 = "-b" || $1 = "--build" ]]; then
-	PATH=$PWD/toolchain/clang/bin:$PATH
+	# PATH=$PWD/toolchain/clang/bin:$PATH
     #$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:
-    pwd
+    # pwd
     mkdir -p out
     # echo $PATH
     echo $DEFCONFIG
