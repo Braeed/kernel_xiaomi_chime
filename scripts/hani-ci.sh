@@ -6,7 +6,7 @@
 SECONDS=0
 KERNEL_PATH=$PWD
 AK3_DIR="$HOME/tc/AnyKernel3"
-DEFCONFIG=$(find ./arch/arm64/configs -name "chime_defconfig")
+DEFCONFIG="arch/arm64/configs/vendor/chime_defconfig"
 
 # Toolchain paths (update after downloading)
 CLANG_PATH="$PWD/toolchain/clang"
