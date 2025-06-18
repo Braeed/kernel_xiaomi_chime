@@ -21,7 +21,8 @@ export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$GCC32_PATH/bin:$PATH"
 
 # ========== TOOLCHAIN DOWNLOADER ==========
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
-    mkdir -p toolchain && cd toolchain
+    mkdir -p toolchain 
+    cd toolchain
 
     # -------- CLANG --------
     # echo "📦 Downloading AOSP Clang (r547379)..."
@@ -54,7 +55,7 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     echo ""
 
     echo "--- Tree view of GCC-64 ---"
-    ls -R "$(pwd)/toolchain/GCC-64"
+    find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
     echo ""
 
     echo -e "\n🎉 All toolchains downloaded successfully"
