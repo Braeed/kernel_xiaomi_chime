@@ -86,7 +86,8 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
         OBJCOPY=llvm-objcopy \
         OBJDUMP=llvm-objdump \
         STRIP=llvm-strip \
-        LLVM=1 LLVM_IAS=1 \
+        LLVM=1  \
+        LLVM_IAS=1 \
         $DEFCONFIG
 
     echo -e "\n🚀 Starting kernel build..."
@@ -99,7 +100,8 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
         OBJCOPY=llvm-objcopy \
         OBJDUMP=llvm-objdump \
         STRIP=llvm-strip \
-        LLVM=1 LLVM_IAS=1 \ || exit 1
+        LLVM=1 \
+        LLVM_IAS=1 \ || exit 1
 
     echo -e "\n✅ Build completed in $SECONDS seconds."
     exit 0
