@@ -22,17 +22,11 @@ jobs:
       run: |
         sudo apt install -y git-core gnupg build-essential zip \
         curl libarchive-tools flex \
-        unzip python3 python3-pip python3-dev \
+        unzip python3 python3-pip python3-dev aria2 \
         python-is-python3 ccache libncurses5-dev lzop \
         patchelf git-lfs ripgrep &> /dev/null
     
-    - name: Set up Clang
-      uses: egor-tensin/setup-clang@v1
-      with:
-        version: 14
-        platform: 
-    
-    - name: Kernel-SU Next
+    - name: KernelSU 
       run: | 
         curl -LSs "https://raw.githubusercontent.com/backslashxx/KernelSU/refs/heads/magic/kernel/setup.sh" | bash -s 12103+155
 
@@ -46,7 +40,7 @@ jobs:
       run: |
         lastcommit=$(git log -n 1 --pretty=format:'%h' | cut -c 1-7)
         branch=$(git rev-parse --abbrev-ref HEAD)
-        ZIPNAME="4.19-hanikrnl.KSU-SUSFS."$branch-$lastcommit"-$(date '+%d.%m.%y-%H%M').zip" && echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
+        ZIPNAME="4.19-hanikrnl."$branch-$lastcommit"-$(date '+%d.%m.%y-%H%M').zip" && echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
         git clone https://github.com/Dominium-Apum/AnyKernel3.git
         mkdir -p AnyKernel3
         cp out/arch/arm64/boot/Image AnyKernel3/

@@ -1,52 +1,89 @@
 #!/bin/bash
 #
-# Compile script for hanikrnl.
+# build.sh — Kernel compile script with AOSP Clang + GCC downloader
 #
-SECONDS=0 # builtin bash timer
+
+SECONDS=0
 KERNEL_PATH=$PWD
 AK3_DIR="$HOME/tc/AnyKernel3"
 DEFCONFIG="vendor/chime_defconfig"
 
-# Exports for shits and giggles
+# Toolchain paths (update after downloading)
+CLANG_PATH="$PWD/toolchain/clang-r547379"
+GCC64_PATH="$PWD/toolchain/GCC-64"
+# GCC32_PATH="$PWD/toolchain/arm-linux-androideabi-4.9"
+
+# Export build info
 export KBUILD_BUILD_VERSION=69
 export KBUILD_BUILD_USER=hani
 export KBUILD_BUILD_HOST=dungeon
+export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$PATH"
 
-# Install needed tools
+# ========== TOOLCHAIN DOWNLOADER ==========
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
-        mkdir toolchain
-	cd toolchain
+    mkdir -p toolchain && cd toolchain
 
-	curl -LO "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman" || exit 1
+    # -------- CLANG --------
+    echo "📦 Downloading AOSP Clang (r547379)..."
+    aria2c -x 16 -s 16 -c -o clang.tar.gz \
+      "https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379/-/archive/15.0/android_prebuilts_clang_host_linux-x86_clang-r547379-15.0.tar.gz" || exit 1
+    mkdir -p clang-r547379 && tar -xzf clang.tar.gz -C clang-r547379
+    rm clang.tar.gz
+    echo "✅ Clang extracted to: $(pwd)/clang-r547379"
 
-	chmod -x antman
+    # -------- GCC 64-bit --------
+    echo "📦 Downloading AOSP GCC 64-bit..."
+    aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
+      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    mkdir -p GCC-64 && tar -xzf gcc64.tar.gz -C GCC-64
+    rm gcc64.tar.gz
+    echo "✅ GCC 64-bit extracted."
 
-	echo 'Setting up toolchain in $(PWD)/toolchain'
-	bash antman -S --noprogress || exit 1
+    # # -------- GCC 32-bit --------
+    # echo "📦 Downloading AOSP GCC 32-bit..."
+    # aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
+    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/heads/master.tar.gz" || exit 1
+    # mkdir -p arm-linux-androideabi-4.9 && tar -xzf gcc32.tar.gz -C arm-linux-androideabi-4.9
+    # rm gcc32.tar.gz
+    # echo "✅ GCC 32-bit extracted."
 
-	echo 'Patch for glibc'
-	bash antman --patch=glibc
+    echo -e "\n🎉 All toolchains downloaded successfully"
+    exit 0
 fi
 
-# Regenerate defconfig file
+
+# ========== DEFCONFIG REGEN ==========
 if [[ $1 = "-r" || $1 = "--regen" ]]; then
-	make O=out ARCH=arm64 $DEFCONFIG savedefconfig
-	cp out/defconfig arch/arm64/configs/$DEFCONFIG
-	echo -e "\nSuccessfully regenerated defconfig at $DEFCONFIG"
+    make O=out ARCH=arm64 $DEFCONFIG savedefconfig
+    cp out/defconfig arch/arm64/configs/$DEFCONFIG
+    echo -e "\n🛠️ Successfully regenerated defconfig at $DEFCONFIG"
+    exit 0
 fi
 
+# ========== KERNEL BUILD ==========
 if [[ $1 = "-b" || $1 = "--build" ]]; then
-	PATH=$PWD/toolchain/bin:$PATH
-	mkdir -p out
-	make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 $DEFCONFIG
-	echo -e ""
-	echo -e ""
-	echo -e "*****************************"
-	echo -e "**                         **"
-	echo -e "** Starting compilation... **"
-	echo -e "**                         **"
-	echo -e "*****************************"
-	echo -e ""
-	echo -e ""
-	make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 -j$(nproc) || exit 1
-	fi
+	PATH=$PWD/toolchain/clang-r547379/bin:$PWD/toolchain/GCC-64/bin:$PATH
+    mkdir -p out
+
+    echo -e "\n📂 Setting up defconfig..."
+    make O=out ARCH=arm64 \
+        CROSS_COMPILE=aarch64-linux-android- \
+        LLVM=1 \
+        LLVM_IAS=1 \
+        $DEFCONFIG
+
+    echo -e "\n🚀 Starting kernel build..."
+    make -j$(nproc) O=out ARCH=arm64 \
+        CROSS_COMPILE=aarch64-linux-android- \
+        LLVM=1 \
+        LLVM_IAS=1 \ || exit 1
+
+    echo -e "\n✅ Build completed in $SECONDS seconds."
+    exit 0
+fi
+
+# ========== HELP ==========
+# echo "Usage:"
+# echo "  ./build.sh --clang-gcc     # Download AOSP Clang + GCC toolchains"
+# echo "  ./build.sh --regen         # Regenerate defconfig"
+# echo "  ./build.sh --build         # Start kernel build"
