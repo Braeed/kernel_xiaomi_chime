@@ -62,7 +62,7 @@ fi
 
 # ========== KERNEL BUILD ==========
 if [[ $1 = "-b" || $1 = "--build" ]]; then
-	PATH=$PWD/toolchain/clang-r547379/bin:$PWD/toolchain/GCC-64/bin:$PATH
+	PATH=$PWD/toolchain/clang/bin:$PWD/toolchain/GCC-64/bin:$PATH
     mkdir -p out
 
     echo -e "\n📂 Setting up defconfig..."
