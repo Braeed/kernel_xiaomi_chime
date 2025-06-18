@@ -50,7 +50,7 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     # ls "$(pwd)/toolchain/clang"/* echo "" # Add a blank line for better readability
 
     echo "--- Recursive list of all files in GCC-64 ---"
-    find "$(pwd)/toolchain/GCC-64"
+    # find "$(pwd)/toolchain/GCC-64"
     echo ""
 
     echo "--- Tree view of GCC-64 ---"
