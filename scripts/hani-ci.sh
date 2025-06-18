@@ -24,12 +24,12 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     mkdir -p toolchain && cd toolchain
 
     # -------- CLANG --------
-    echo "📦 Downloading AOSP Clang (r547379)..."
-    aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379/-/archive/15.0/android_prebuilts_clang_host_linux-x86_clang-r547379-15.0.tar.gz" || exit 1
-    mkdir -p clang && tar -xf clang.tar.gz -C clang
-    rm clang.tar.gz
-    echo "✅ Clang extracted to: $(pwd)/clang"
+    # echo "📦 Downloading AOSP Clang (r547379)..."
+    # aria2c -x 16 -s 16 -c -o clang.tar.gz \
+    #   "https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379/-/archive/15.0/android_prebuilts_clang_host_linux-x86_clang-r547379-15.0.tar.gz" || exit 1
+    # mkdir -p clang && tar -xf clang.tar.gz -C clang
+    # rm clang.tar.gz
+    # echo "✅ Clang extracted to: $(pwd)/clang"
 
     # -------- GCC 64-bit --------
     echo "📦 Downloading AOSP GCC 64-bit..."
@@ -39,18 +39,23 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     rm gcc64.tar.gz
     echo "✅ GCC 64-bit extracted."
 
-    # -------- GCC 32-bit --------
-    echo "📦 Downloading AOSP GCC 32-bit..."
-    aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
-      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
-    rm gcc32.tar.gz
-    echo "✅ GCC 32-bit extracted."
-    echo "--- Contents within clang toolchain ---"
-    ls "$(pwd)/toolchain/clang"/* echo "" # Add a blank line for better readability
+    # # -------- GCC 32-bit --------
+    # echo "📦 Downloading AOSP GCC 32-bit..."
+    # aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
+    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    # mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
+    # rm gcc32.tar.gz
+    # echo "✅ GCC 32-bit extracted."
+    # echo "--- Contents within clang toolchain ---"
+    # ls "$(pwd)/toolchain/clang"/* echo "" # Add a blank line for better readability
 
-    echo "--- Contents within GCC-64 toolchain ---"
-    ls "$(pwd)/toolchain/GCC-64"/* echo "" # Add a blank line for better readability
+    echo "--- Recursive list of all files in GCC-64 ---"
+    find "$(pwd)/toolchain/GCC-64"
+    echo ""
+
+    echo "--- Tree view of GCC-64 ---"
+    ls -R "$(pwd)/toolchain/GCC-64"
+    echo ""
 
     echo -e "\n🎉 All toolchains downloaded successfully"
     exit 0
