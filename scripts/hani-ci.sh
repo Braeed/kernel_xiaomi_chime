@@ -9,7 +9,7 @@ AK3_DIR="$HOME/tc/AnyKernel3"
 DEFCONFIG="vendor/chime_defconfig"
 
 # Toolchain paths (update after downloading)
-CLANG_PATH="$PWD/toolchain/clang-r547379"
+CLANG_PATH="$PWD/toolchain/clang"
 GCC64_PATH="$PWD/toolchain/GCC-64"
 # GCC32_PATH="$PWD/toolchain/arm-linux-androideabi-4.9"
 
@@ -27,15 +27,15 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     echo "📦 Downloading AOSP Clang (r547379)..."
     aria2c -x 16 -s 16 -c -o clang.tar.gz \
       "https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379/-/archive/15.0/android_prebuilts_clang_host_linux-x86_clang-r547379-15.0.tar.gz" || exit 1
-    mkdir -p clang-r547379 && tar -xzf clang.tar.gz -C clang-r547379
+    mkdir -p clang && tar -xf clang.tar.gz -C clang
     rm clang.tar.gz
-    echo "✅ Clang extracted to: $(pwd)/clang-r547379"
+    echo "✅ Clang extracted to: $(pwd)/clang"
 
     # -------- GCC 64-bit --------
     echo "📦 Downloading AOSP GCC 64-bit..."
     aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
       "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    mkdir -p GCC-64 && tar -xzf gcc64.tar.gz -C GCC-64
+    mkdir -p GCC-64 && tar -xf gcc64.tar.gz -C GCC-64
     rm gcc64.tar.gz
     echo "✅ GCC 64-bit extracted."
 
