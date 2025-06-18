@@ -7,10 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # - name: Checkout source
-    #   uses: actions/checkout@v4
-    #   with:
-    #     submodules: recursive
+    - name: Checkout source
+      uses: actions/checkout@v4
+
 
     # - name: Update Environment
     #   run: sudo apt update -y
