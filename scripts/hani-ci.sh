@@ -25,20 +25,21 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     mkdir -p toolchain 
     cd toolchain
 
-    -------- CLANG --------
-    echo "📦 Downloading AOSP Clang (r547379)..."
-    aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz" || exit 1
-    mkdir -p clang && tar -xf clang.tar.gz -C clang
-    rm clang.tar.gz
-    echo "✅ Clang extracted to: $(pwd)/clang"
-    
     # -------- CLANG --------
     # echo "📦 Downloading AOSP Clang (r547379)..."
     # aria2c -x 16 -s 16 -c -o clang.tar.gz \
-    #   "https://github.com/topnotchfreaks/clang/releases/download/tnfclang-2025.05.30-13.38.52/topnotchfreaks-android-clang.tar.gz"
+    #   "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz" || exit 1
     # mkdir -p clang && tar -xf clang.tar.gz -C clang
     # rm clang.tar.gz
+    # echo "✅ Clang extracted to: $(pwd)/clang"
+    
+    -------- CLANG --------
+    echo "📦 Downloading AOSP Clang (r547379)..."
+    aria2c -x 16 -s 16 -c -o clang.tar.gz \
+      "https://github.com/liliumproject/clang/releases/download/20250609/lilium_clang-20250609.tar.gz"
+    mkdir -p clang && tar -xf clang.tar.gz -C clang
+    rm clang.tar.gz
+
     # echo "✅ Clang extracted to: $(pwd)/clang"
     # -------- GCC 64-bit --------
     echo "📦 Downloading AOSP GCC 64-bit..."
