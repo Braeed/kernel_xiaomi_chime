@@ -11,13 +11,14 @@ DEFCONFIG="vendor/chime_defconfig"
 # Toolchain paths (update after downloading)
 CLANG_PATH="$PWD/toolchain/clang"
 GCC64_PATH="$PWD/toolchain/GCC-64"
-GCC32_PATH="$PWD/toolchain/GCC-32"
+# GCC32_PATH="$PWD/toolchain/GCC-32"
 
 # Export build info
 export KBUILD_BUILD_VERSION=69
 export KBUILD_BUILD_USER=hani
 export KBUILD_BUILD_HOST=dungeon
-export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$GCC32_PATH/bin:$PATH"
+export PATH="$CLANG_PATH/bin:$GCC64_PATH/bin:$PATH"
+# $GCC32_PATH/bin:
 
 
 # ========== TOOLCHAIN DOWNLOADER ==========
@@ -36,26 +37,28 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     -------- CLANG --------
     echo "📦 Downloading AOSP Clang (r547379)..."
     aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r563880.tar.gzhttps://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r563880.tar.gz"
+      "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r563880.tar.gz"
     mkdir -p clang && tar -xf clang.tar.gz -C clang
     rm clang.tar.gz
 
     # echo "✅ Clang extracted to: $(pwd)/clang"
     # -------- GCC 64-bit --------
     echo "📦 Downloading AOSP GCC 64-bit..."
-    aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
-      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    mkdir -p GCC-64 && tar -xf gcc64.tar.gz -C GCC-64
-    rm gcc64.tar.gz
+    git clone --depth=1 -q https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3 GCC-64
+    # echo "📦 Downloading AOSP GCC 64-bit..."
+    # aria2c -x 16 -s 16 -c -o gcc64.tar.gz \
+    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    # mkdir -p GCC-64 && tar -xf gcc64.tar.gz -C GCC-64
+    # rm gcc64.tar.gz
     echo "✅ GCC 64-bit extracted."
 
-    -------- GCC 32-bit --------
-    echo "📦 Downloading AOSP GCC 32-bit..."
-    aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
-      "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
-    mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
-    rm gcc32.tar.gz
-    echo "✅ GCC 32-bit extracted."
+    # -------- GCC 32-bit --------
+    # echo "📦 Downloading AOSP GCC 32-bit..."
+    # aria2c -x 16 -s 16 -c -o gcc32.tar.gz \
+    #   "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/tags/android-12.1.0_r27.tar.gz" || exit 1
+    # mkdir -p GCC-32 && tar -xzf gcc32.tar.gz -C GCC-32
+    # rm gcc32.tar.gz
+    # echo "✅ GCC 32-bit extracted."
     
     echo -e "\n🎉 All toolchains downloaded successfully"
     exit 0
@@ -78,17 +81,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
     # echo $PATH
     echo $DEFCONFIG
     echo -e "\n📂 Setting up defconfig..."
-    make O=out ARCH=arm64 \
-        CC=clang \
-        CROSS_COMPILE=aarch64-linux- \
-        LD=ld.lld \
-        AR=llvm-ar \
-        NM=llvm-nm \
-        OBJCOPY=llvm-objcopy \
-        OBJDUMP=llvm-objdump \
-        STRIP=llvm-strip \
-        LLVM=1 \
-        LLVM_IAS=1 $DEFCONFIG
+    make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux- $DEFCONFIG
 
     echo -e "\n🚀 Starting kernel build..."
 
