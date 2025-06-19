@@ -36,7 +36,7 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     -------- CLANG --------
     echo "📦 Downloading AOSP Clang (r547379)..."
     aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250618-release/Clang-21.0.0git-20250618.tar.gz"
+      "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r563880.tar.gzhttps://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r563880.tar.gz"
     mkdir -p clang && tar -xf clang.tar.gz -C clang
     rm clang.tar.gz
 
@@ -72,20 +72,29 @@ fi
 
 # ========== KERNEL BUILD ==========
 if [[ $1 = "-b" || $1 = "--build" ]]; then
-	# PATH=$PWD/toolchain/clang/bin:$PATH
-    #$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:
+	  PATH=$PWD/toolchain/clang/bin:$PWD/toolchain/GCC-64/bin:$PWD/toolchain/GCC-32/bin:$PATH
     # pwd
     mkdir -p out
     # echo $PATH
     echo $DEFCONFIG
     echo -e "\n📂 Setting up defconfig..."
-    make O=out ARCH=arm64 $DEFCONFIG
+    make O=out ARCH=arm64 \
+        CC=clang \
+        CROSS_COMPILE=aarch64-linux- \
+        LD=ld.lld \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
+        LLVM=1 \
+        LLVM_IAS=1 $DEFCONFIG
 
     echo -e "\n🚀 Starting kernel build..."
 
     make -j$(nproc) O=out ARCH=arm64 \
         CC=clang \
-        CROSS_COMPILE=aarch64-linux-gnu- \
+        CROSS_COMPILE=aarch64-linux- \
         LD=ld.lld \
         AR=llvm-ar \
         NM=llvm-nm \
