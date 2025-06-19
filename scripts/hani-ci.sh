@@ -36,7 +36,7 @@ if [[ $1 = "-t" || $1 = "--tools" ]]; then
     -------- CLANG --------
     echo "📦 Downloading AOSP Clang (r547379)..."
     aria2c -x 16 -s 16 -c -o clang.tar.gz \
-      "https://github.com/liliumproject/clang/releases/download/20250609/lilium_clang-20250609.tar.gz"
+      "https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250618-release/Clang-21.0.0git-20250618.tar.gz"
     mkdir -p clang && tar -xf clang.tar.gz -C clang
     rm clang.tar.gz
 
